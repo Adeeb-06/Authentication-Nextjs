@@ -1,7 +1,6 @@
 import React from "react";
 import localFont from "next/font/local";
 import "./globals.css";
-import SideBarPage from "@/components/SideBar";
 import { getServerSession } from "next-auth";
 import SessionProvider from "@/libs/SessionProvider";
 
