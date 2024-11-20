@@ -52,6 +52,8 @@ export const authOptions = {
     },
     callbacks: {
         async signIn({ user, account, profile }) {
+
+            await connectToMongoDb()
             if (account.provider === "google") {
                 await connectToMongoDb();
                 const existingUser = await User.findOne({ email: user.email });
@@ -66,6 +68,12 @@ export const authOptions = {
                     await newUser.save();
                 }
             }
+            if(account.provider === "credentials"){
+                const dbUser = await User.findOne({ email: user.email });
+                if(dbUser){
+                    user.role =dbUser.role
+                }
+            }
             return true;
         },
         async jwt({ token, user }) {
@@ -73,6 +81,13 @@ export const authOptions = {
               // Add id and role from the user object to the token
               token.id = user._id || user.id || null;
               token.role = user.role || "user"; // Default role if undefined
+            } else if(!token.role){
+                await connectToMongoDb();
+                const dbUser = await User.findOne({ email: token.email });
+                if (dbUser) {
+                    token.role = dbUser.role || "user";
+                    token.id = dbUser._id.toString();
+                }
             }
             console.log("JWT Callback - Final Token:", token); // Debug
             return token;
