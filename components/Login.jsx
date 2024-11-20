@@ -53,10 +53,8 @@ const Login = () => {
 
         if (res?.error) {
             setError("erroro")
-            if (res?.url) router.replace('/')
-        } else {
-            setError("sdf")
         }
+        if (res?.url) router.replace('/')
     }
     return (
         <>
