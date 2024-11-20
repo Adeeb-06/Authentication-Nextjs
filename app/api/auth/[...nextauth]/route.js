@@ -54,14 +54,13 @@ export const authOptions = {
         async signIn({ user, account, profile }) {
             if (account.provider === "google") {
                 await connectToMongoDb();
-
                 const existingUser = await User.findOne({ email: user.email });
                 if (!existingUser) {
                     // If the user does not exist in the database, create a new user
                     const newUser = new User({
                         name: user.name,
                         email: user.email,
-                        password: generateStrongPassword(), // Password is not applicable for Google users
+                        password: generateStrongPassword(), // Password not applicable for Google users
                         role: "user",
                     });
                     await newUser.save();
@@ -69,20 +68,23 @@ export const authOptions = {
             }
             return true;
         },
+        async jwt({ token, user }) {
+           
+            return token;
+        },
         async session({ session, token }) {
-            // Attach MongoDB User ID to the session
-            const dbUser = await User.findOne({ email: session.user.email });
-            if (dbUser) {
-                session.user.id = dbUser._id;
-                session.user.role = dbUser.role;
+            // console.log("Session Callback - Token:", token);
+            if(token){
+                session.user.role = token.role;
             }
+            session.user.id = token.id;
+            // console.log("Session Callback - Final session:", session);
             return session;
         },
     },
-    secret: process.env.NEXTAUTH_SECRET,
-    session: {
-        strategy: "jwt",
-    },
+    session:{
+        strategy:'jwt'
+    }
 };
 
 export const handler = NextAuth(authOptions)
