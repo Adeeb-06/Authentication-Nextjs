@@ -57,6 +57,9 @@ export const authOptions = {
             if (account.provider === "google") {
                 await connectToMongoDb();
                 const existingUser = await User.findOne({ email: user.email });
+                if(existingUser){
+                    user.role = existingUser.role
+                }
                 if (!existingUser) {
                     // If the user does not exist in the database, create a new user
                     const newUser = new User({

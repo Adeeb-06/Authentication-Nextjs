@@ -53,7 +53,6 @@ const Login = () => {
         if (res?.error) {
             setError("erroro")
         }
-        if (res?.url) router.replace('/')
     }
     return (
         <>
