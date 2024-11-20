@@ -69,24 +69,27 @@ export const authOptions = {
             return true;
         },
         async jwt({ token, user }) {
-            console.log("JWT Callback - Token:", token); // Debug
-            return token;
-        },
-        async session({ session, token }) {
-            // console.log("Session Callback - Token:", token);
-            if(token){
-                session.user.role = token.role;
+            if (user) {
+              // Add id and role from the user object to the token
+              token.id = user._id || user.id || null;
+              token.role = user.role || "user"; // Default role if undefined
             }
-            session.user.id = token.id;
-            // console.log("Session Callback - Final session:", session);
-            console.log("Session Callback - Token:", token); // Debug
-            console.log("Session Callback - Session:", session); // Debug
+            console.log("JWT Callback - Final Token:", token); // Debug
+            return token;
+          },          
+          async session({ session, token }) {
+            if (token) {
+              session.user.id = token.id || null;
+              session.user.role = token.role || "user"; // Default role if undefined
+            }
+            console.log("Session Callback - Final Session:", session); // Debug
             return session;
-        },
+          },          
     },
     session:{
         strategy:'jwt'
-    }
+    },
+    secret: process.env.NEXTAUTH_SECRET
 };
 
 export const handler = NextAuth(authOptions)
