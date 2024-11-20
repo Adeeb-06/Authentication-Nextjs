@@ -18,7 +18,12 @@ const Login = () => {
 
     useEffect(() => {
         if(session?.status == "authenticated") {
-            router.replace('/')
+            if(session?.data?.user?.role == "user"){
+                router.replace('/user')
+            }
+            if(session?.data?.user?.role == "admin"){
+                router.replace('/dashboard')
+            }
         }
     }, [session, router])
 
