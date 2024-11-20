@@ -69,7 +69,7 @@ export const authOptions = {
             return true;
         },
         async jwt({ token, user }) {
-           
+            console.log("JWT Callback - Token:", token); // Debug
             return token;
         },
         async session({ session, token }) {
@@ -79,6 +79,8 @@ export const authOptions = {
             }
             session.user.id = token.id;
             // console.log("Session Callback - Final session:", session);
+            console.log("Session Callback - Token:", token); // Debug
+            console.log("Session Callback - Session:", session); // Debug
             return session;
         },
     },

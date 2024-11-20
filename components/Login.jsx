@@ -46,7 +46,6 @@ const Login = () => {
         }
 
         const res = signIn("credentials", {
-            redirect: false,
             email,
             password
         })
